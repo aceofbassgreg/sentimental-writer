@@ -24,12 +24,17 @@ class Twitter::Importer
     get(subject).attrs.first.last
   end
 
-  def store_all_data_from(tweet)
-    store(tweet)
+  def store_all_data_from(tweet_data)
+    tweet_record = store(tweet_data)
 
-    # hashtags(tweet).each do |hashtag|
-    #   store_hashtag(tweet.id)
-    # end
+    return unless !!tweet_record.id
+
+    hashtags(tweet_data).each do |hashtag|
+      tweet_record.hashtags.create(name: hashtag[:text])
+    end
+
+  rescue 
+    binding.pry
   end
 
   def store(tweet)
@@ -45,11 +50,15 @@ class Twitter::Importer
       )
   end
 
-  # def hashtags(tweet)
-  #   tweet[:entities][:hashtags]
-  # end
+  def hashtags(tweet_data)
+    tweet_data[:entities][:hashtags]
+  end
 
-  def store_hashtag(tweet_id)
+  def store_tweet_hashtag(tweet_id, hashtag_id)
+    TweetHashtag.create(
+      tweet_id: tweet_id,
+      hashtag_id: hashtag_id
+      )
     
   end
 
