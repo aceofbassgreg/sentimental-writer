@@ -25,6 +25,14 @@ class Twitter::Importer
   end
 
   def store_all_data_from(tweet)
+    store(tweet)
+
+    # hashtags(tweet).each do |hashtag|
+    #   store_hashtag(tweet.id)
+    # end
+  end
+
+  def store(tweet)
     ::Tweet.create(
       id_from_twitter: tweet[:id],
       text: tweet[:text],
@@ -35,10 +43,6 @@ class Twitter::Importer
       retweet_count: tweet[:retweet_count],
       favorite_count: tweet[:favorite_count],
       )
-
-    # hashtags(tweet).each do |hashtag|
-    #   store_hashtag(tweet.id)
-    # end
   end
 
   # def hashtags(tweet)
