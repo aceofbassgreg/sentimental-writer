@@ -25,7 +25,8 @@ class Twitter::Importer
   end
 
   def store_all_data_from(tweet_data)
-    tweet_record = store(tweet_data)
+    sentiment_score = Sentimental::Processor.new(tweet_data[:text]).get_score
+    tweet_record = store(tweet_data,sentiment_score)
 
     return unless !!tweet_record.id
 
@@ -37,7 +38,7 @@ class Twitter::Importer
     binding.pry
   end
 
-  def store(tweet)
+  def store(tweet,sentiment_score)
     ::Tweet.create(
       id_from_twitter: tweet[:id],
       text: tweet[:text],
@@ -47,6 +48,7 @@ class Twitter::Importer
       author_followers: tweet[:user][:followers_count],
       retweet_count: tweet[:retweet_count],
       favorite_count: tweet[:favorite_count],
+      sentiment_score: sentiment_score
       )
   end
 
