@@ -3,10 +3,9 @@ require 'csv'
 class Spreadsheet::Exporter
   SNAPSHOT_DURATION = 15
 
-  attr_accessor :filename, :snapshot_counter, :event_start_time, :event_end_time
+  attr_accessor :snapshot_counter, :event_start_time, :event_end_time
 
   def initialize(snapshot_counter:, event_start_time:, event_end_time:)
-    self.filename = generate_filename
     self.snapshot_counter = snapshot_counter
     self.event_start_time = event_start_time
     self.event_end_time = event_end_time
@@ -47,7 +46,7 @@ class Spreadsheet::Exporter
     @csv = nil
   end
 
-  def generate_filename
+  def filename
     Rails.root.join "tmp", "tweet_export_#{snapshot_counter}.csv"
   end
 
@@ -148,7 +147,7 @@ class Spreadsheet::Exporter
     end
 
     def overall_tweet_percentage
-      (overall_tweet_mentions.to_f / overall_tweet_count).round(2)
+      percentage overall_tweet_mentions, overall_tweet_count
     end
 
     def overall_tweet_mentions
@@ -160,7 +159,7 @@ class Spreadsheet::Exporter
     end
 
     def current_snapshot_tweet_percentage
-      (current_snapshot_tweet_mentions.to_f / current_snapshot_tweet_count).round(2)
+      percentage current_snapshot_tweet_mentions, current_snapshot_tweet_count
     end
 
     def current_snapshot_tweet_mentions
@@ -172,7 +171,7 @@ class Spreadsheet::Exporter
     end
 
     def previous_snapshot_tweet_percentage
-      (previous_snapshot_tweet_mentions.to_f / previous_snapshot_tweet_count).round(2)
+      percentage previous_snapshot_tweet_mentions, previous_snapshot_tweet_count
     end
 
     def previous_snapshot_tweet_mentions
@@ -212,7 +211,7 @@ class Spreadsheet::Exporter
     end
 
     def current_snapshot_top_topic_percentage
-      (current_snapshot_top_topic_count.to_f / current_snapshot_tweet_count).round(2)
+      percentage current_snapshot_top_topic_count, current_snapshot_tweet_count
     end
 
     def current_snapshot_top_topic_count
@@ -230,7 +229,8 @@ class Spreadsheet::Exporter
     def current_snapshot_top_referenced_person_sentiment_score
       return if current_snapshot_top_referenced_person_tweets.nil?
       sum = current_snapshot_top_referenced_person_tweets.map(&:sentiment_score).reduce(&:+).to_f
-      sum / current_snapshot_top_referenced_person_tweets.size
+
+      percentage sum, current_snapshot_top_referenced_person_tweets.size
     end
 
     def current_snapshot_top_hashtag
@@ -238,7 +238,7 @@ class Spreadsheet::Exporter
     end
 
     def current_snapshot_top_hashtag_percentage
-      (current_snapshot_top_hashtag_count.to_f / current_snapshot_tweet_count).round(2)
+      percentage current_snapshot_top_hashtag_count, current_snapshot_tweet_count
     end
 
     def current_snapshot_top_hashtag_count
@@ -256,7 +256,7 @@ class Spreadsheet::Exporter
     end
 
     def overall_tweet_count
-      overall_tweets.count
+      @overall_tweet_count ||= overall_tweets.count
     end
 
     def current_snapshot_person_tweets
@@ -268,7 +268,7 @@ class Spreadsheet::Exporter
     end
 
     def current_snapshot_tweet_count
-      current_snapshot_tweets.count
+      @current_snapshot_tweet_count ||= current_snapshot_tweets.count
     end
 
     def previous_snapshot_person_tweets
@@ -341,6 +341,11 @@ class Spreadsheet::Exporter
         @current_snapshot_hashtag_counts.sort_by {|hashtag, count| count}.reverse
       end
       @current_snapshot_hashtag_counts
+    end
+
+    def percentage(sum, count)
+      return if count == 0
+      (sum.to_f / count).round(2)
     end
 
   end
