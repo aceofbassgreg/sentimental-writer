@@ -40,6 +40,12 @@ class Twitter::Importer
         TweetTopic.create(tweet_id: tweet_record.id, topic_id: topic.id)
       end
     end
+
+    Person.all.each do |person|
+      if !!tweet_text.match((Regexp.new(Regexp.escape(person.last), Regexp::IGNORECASE)))
+        Reference.create(tweet_id: tweet_record.id, person_id: person.id)
+      end
+    end
   rescue 
     binding.pry
   end
