@@ -52,6 +52,9 @@ class Spreadsheet::Exporter
 
   def insert_rows
     Person.order(:last).each do |person|
+      puts "\n\n\n********************\n\n\n"
+      puts "Inserting rows for #{person.name}"
+      puts "\n\n\n********************\n\n\n"
       csv << Row.new(self, person).build
     end
   end
