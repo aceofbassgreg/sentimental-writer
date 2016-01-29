@@ -15,8 +15,11 @@ class Twitter::Importer
   end
 
   def load_tweets_for(subject)
-    all_tweets_for(subject).each do |tweet|
-      store_all_data_from(tweet)
+    15.times do 
+      all_tweets_for(subject).each do |tweet|
+        store_all_data_from(tweet)
+      end
+      sleep 1
     end
   end
 
