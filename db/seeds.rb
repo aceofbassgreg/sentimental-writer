@@ -62,7 +62,14 @@ TOPICS = [
   "guns",
   "education",
   "national security",
-  "social issues"
+  "social issues",
+  "veterans",
+  "gitmo",
+  "tax",
+  "minimum wage",
+  "low wage",
+  "hillary",
+  "bernie"
 ]
 
 TOPICS.each do |topic|

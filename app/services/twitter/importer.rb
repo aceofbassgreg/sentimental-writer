@@ -25,7 +25,8 @@ class Twitter::Importer
   end
 
   def store_all_data_from(tweet_data)
-    sentiment_score = Sentimental::Processor.new(tweet_data[:text]).get_score
+    tweet_text = tweet_data[:text]
+    sentiment_score = Sentimental::Processor.new(tweet_text).get_score
     tweet_record = store(tweet_data,sentiment_score)
 
     return unless !!tweet_record.id
@@ -34,6 +35,11 @@ class Twitter::Importer
       tweet_record.hashtags.create(name: hashtag[:text])
     end
 
+    Topic.all.each do |topic|
+      if !!tweet_text.match((Regexp.new(Regexp.escape(topic.name), Regexp::IGNORECASE)))
+        TweetTopic.create(tweet_id: tweet_record.id, topic_id: topic.id)
+      end
+    end
   rescue 
     binding.pry
   end
@@ -55,14 +61,5 @@ class Twitter::Importer
   def hashtags(tweet_data)
     tweet_data[:entities][:hashtags]
   end
-
-  def store_tweet_hashtag(tweet_id, hashtag_id)
-    TweetHashtag.create(
-      tweet_id: tweet_id,
-      hashtag_id: hashtag_id
-      )
-    
-  end
-
 
 end
