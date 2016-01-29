@@ -337,8 +337,9 @@ class Spreadsheet::Exporter
         @current_snapshot_hashtag_counts = {}
         current_snapshot_person_tweets.each do |tweet|
           tweet.hashtags.excluding(event_hashtags).each do |hashtag|
-            @current_snapshot_hashtag_counts[hashtag] ||= 0
-            @current_snapshot_hashtag_counts[hashtag] += 1
+            hashtag_name = hashtag.name.downcase
+            @current_snapshot_hashtag_counts[hashtag_name] ||= 0
+            @current_snapshot_hashtag_counts[hashtag_name] += 1
           end
         end
         @current_snapshot_hashtag_counts.sort_by {|hashtag, count| count}.reverse
