@@ -7,4 +7,6 @@ class Tweet < ActiveRecord::Base
   has_many :people, through: :references
 
   validates_uniqueness_of :id_from_twitter
+
+  scope :between, ->(start_time, end_time) { where("tweets.created_at BETWEEN ? AND ?", start_time, end_time) }
 end
