@@ -336,7 +336,7 @@ class Spreadsheet::Exporter
       if @current_snapshot_hashtag_counts.nil?
         @current_snapshot_hashtag_counts = {}
         current_snapshot_person_tweets.each do |tweet|
-          tweet.hashtags.excluding(event_hashtag).each do |hashtag|
+          tweet.hashtags.excluding(event_hashtags).each do |hashtag|
             @current_snapshot_hashtag_counts[hashtag] ||= 0
             @current_snapshot_hashtag_counts[hashtag] += 1
           end
@@ -351,8 +351,8 @@ class Spreadsheet::Exporter
       (sum.to_f / count).round(2)
     end
 
-    def event_hashtag
-      @event_hashtag ||= Hashtag.where(name: [EVENT_HASHTAG, EVENT_HASHTAG.gsub('#','')]).first
+    def event_hashtags
+      @event_hashtags ||= Hashtag.where(name: [EVENT_HASHTAG, EVENT_HASHTAG.gsub('#','')]).all
     end
 
   end

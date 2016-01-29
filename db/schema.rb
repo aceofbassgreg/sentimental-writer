@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160128232646) do
+ActiveRecord::Schema.define(version: 20160129170918) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,9 @@ ActiveRecord::Schema.define(version: 20160128232646) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "references", ["person_id"], name: "index_references_on_person_id", using: :btree
+  add_index "references", ["tweet_id"], name: "index_references_on_tweet_id", using: :btree
+
   create_table "topics", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at", null: false
@@ -49,12 +52,18 @@ ActiveRecord::Schema.define(version: 20160128232646) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "tweet_hashtags", ["hashtag_id"], name: "index_tweet_hashtags_on_hashtag_id", using: :btree
+  add_index "tweet_hashtags", ["tweet_id"], name: "index_tweet_hashtags_on_tweet_id", using: :btree
+
   create_table "tweet_topics", force: :cascade do |t|
     t.integer  "tweet_id"
     t.integer  "topic_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_index "tweet_topics", ["topic_id"], name: "index_tweet_topics_on_topic_id", using: :btree
+  add_index "tweet_topics", ["tweet_id"], name: "index_tweet_topics_on_tweet_id", using: :btree
 
   create_table "tweets", force: :cascade do |t|
     t.string   "id_from_twitter"
