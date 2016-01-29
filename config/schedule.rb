@@ -22,5 +22,5 @@
 env :MAILTO, 'greg@automatedinsights.com'
 
 every 1.minute do 
-  runner "Twitter::Importer.new.load_tweets_for(#GOPDebate)"
+  runner "Twitter::Importer.new.load_tweets_for('#GOPDebate')"
 end
