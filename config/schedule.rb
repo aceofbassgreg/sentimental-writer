@@ -18,3 +18,9 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
+
+env :MAILTO, 'greg@automatedinsights.com'
+
+every 6.seconds do 
+  runner "Twitter::Importer.new.load_tweets_for(#GOPDebate)"
+end
