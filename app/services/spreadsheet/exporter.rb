@@ -237,7 +237,7 @@ class Spreadsheet::Exporter
     end
 
     def current_snapshot_top_hashtag
-      current_snapshot_hashtag_counts.first.try(:first).try(:name)
+      current_snapshot_hashtag_counts.first.try(:first)
     end
 
     def current_snapshot_top_hashtag_percentage
