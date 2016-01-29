@@ -352,7 +352,7 @@ class Spreadsheet::Exporter
     end
 
     def event_hashtag
-      @event_hashtag ||= Hashtag.where(name: [EVENT_HASHTAG, EVENT_HASHTAG.gsub('#','')])
+      @event_hashtag ||= Hashtag.where(name: [EVENT_HASHTAG, EVENT_HASHTAG.gsub('#','')]).first
     end
 
   end
