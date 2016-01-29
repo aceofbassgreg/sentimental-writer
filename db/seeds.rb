@@ -42,7 +42,7 @@ CANDIDATES = [
 ]
 
 CANDIDATES.each do |candidate|
-  Person.create(first: candidate[:first_name], last: candidate[:last_name])
+  Person.where(first: candidate[:first_name], last: candidate[:last_name]).first_or_create
 end
 
 TOPICS = [
@@ -73,5 +73,5 @@ TOPICS = [
 ]
 
 TOPICS.each do |topic|
-  Topic.create(name: topic)
+  Topic.where(name: topic).first_or_create
 end
