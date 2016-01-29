@@ -290,14 +290,14 @@ class Spreadsheet::Exporter
       ranks = Person.all.map do |p|
         [p, p.tweets.between(start_time, end_time).count]
       end
-      ranks.sort_by{ |ary| ary[1] }.index{|ary| ary[0] == person} + 1
+      ranks.sort_by{ |ary| ary[1] }.reverse.index{|ary| ary[0] == person} + 1
     end
 
     def sentiment_score_rank(start_time, end_time)
       ranks = Person.all.map do |p|
         [p, p.tweets.between(start_time, end_time).average(:sentiment_score)]
       end
-      ranks.sort_by{ |ary| ary[1] }.index{|ary| ary[0] == person} + 1
+      ranks.sort_by{ |ary| ary[1] }.reverse.index{|ary| ary[0] == person} + 1
     end
 
     def current_snapshot_topic_counts
@@ -336,7 +336,7 @@ class Spreadsheet::Exporter
       if @current_snapshot_hashtag_counts.nil?
         @current_snapshot_hashtag_counts = {}
         current_snapshot_person_tweets.each do |tweet|
-          tweet.hashtags.each do |hashtag|
+          tweet.hashtags.excluding(event_hashtag).each do |hashtag|
             @current_snapshot_hashtag_counts[hashtag] ||= 0
             @current_snapshot_hashtag_counts[hashtag] += 1
           end
@@ -349,6 +349,10 @@ class Spreadsheet::Exporter
     def percentage(sum, count)
       return if count == 0
       (sum.to_f / count).round(2)
+    end
+
+    def event_hashtag
+      @event_hashtag ||= Hashtag.where(name: [EVENT_HASHTAG, EVENT_HASHTAG.gsub('#','')])
     end
 
   end
